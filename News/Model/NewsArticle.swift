@@ -21,6 +21,9 @@ struct NewsArticle: Identifiable, Codable{
     
  }
 
+
+
+
 struct NewsResponse: Codable {
     let articles: [NewsArticle]
 }

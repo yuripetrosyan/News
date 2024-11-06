@@ -11,7 +11,23 @@ struct ContentView: View {
     
     @StateObject private var apiManager = NewsAPIManager()
     @State private var selectedURL: IdentifiableURL?  // To hold the tapped article URL
+    @State private var selectedCountry: String = "us"//Default country
+    @State private var selectedCategory: String = "business"
+    @State private var globeIsOn: Bool = false
     
+    
+    let categories = ["business", "entertainment", "general", "health", "science", "sports", "technology"]
+
+    
+    let countries = [
+        ("US", "us"),
+        ("NL", "nl"),
+        ("ARM", "am"),
+        ("UK", "gb"),
+        ("CN", "ca"),
+        ("AU", "au"),
+        ("IND", "in")
+    ]
     
     var body: some View {
         NavigationStack{
@@ -21,29 +37,34 @@ struct ContentView: View {
                     .ignoresSafeArea()
                 
                 
+                
                 VStack {
                     //List of News Cell
                     List {
-                        Section(header: SectionHeader(title: "Today's top stories")) {
-                            ForEach(apiManager.articles) { article in
+                        //Top News
+                        Section(header: SectionHeader(title: "Today's top stories in \(selectedCountry)")) {
+                            ForEach(apiManager.articles.prefix(5)) { article in
                                 Button(action: { selectedURL = IdentifiableURL(url: article.url)}) {
                                     NewsCell(newsImage: article.urlToImage, newsTitle: article.title)
                                         .frame(height: 40)
                                 }
                             }
                         }
+                        //News By Category
+                        Picker ("Select Category", selection: $selectedCategory) {
+                            ForEach(categories, id: \.self) { category in
+                                Text(category)
+                            }
+                        }.pickerStyle(.segmented)
                         
-//                        Section(header: SectionHeader(title: "Today's tech stories")){
-//                            ForEach(apiManager.articles) { article in
-//                                Button(action: { selectedURL = IdentifiableURL(url: article.url)}) {
-//                                    NewsCell(newsImage: article.urlToImage, newsTitle: article.title)
-//                                        .frame(height: 40)
-//                                }
-//                            }
-//                            
-//                        }
-                        
-                        
+                        Section(header: SectionHeader(title: "Top \(selectedCategory) news")) {
+                            ForEach(apiManager.categoryArticles.prefix(10)) { article in
+                                Button(action: { selectedURL = IdentifiableURL(url: article.url)}) {
+                                    NewsCell(newsImage: article.urlToImage, newsTitle: article.title)
+                                        .frame(height: 40)
+                                }
+                            }
+                        }
                     }
                 }
                 //MARK: ToolBar
@@ -60,33 +81,46 @@ struct ContentView: View {
                         }
                         
                     }
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button(action: {
-                            
-                        }){
-                            Image(systemName: "globe")
-                                .foregroundStyle(.pink)
+                    
+                    //MARK: - Picker
+                    ToolbarItem{
+                        Picker("", selection: $selectedCountry) {
+                            ForEach(countries, id: \.1){ country in
+                                Text(country.0).tag(country.1)}
                         }
+                        .pickerStyle(MenuPickerStyle())
+                        .tint(.pink)
                     }
                     ToolbarItem{
                         Button(action: {
-                            
+
                         }){
                             Image(systemName: "magnifyingglass")
                                 .foregroundStyle(.pink)
-                            
                         }
                     }
                 }
-                //Safari view with the selectedURL
+                
+                //MARK: - Safari View
                 .sheet(item: $selectedURL) { identifiableURL in
                     SafariView(url: identifiableURL.url)
                 }
+                
             }
+            
             .onAppear{
-                apiManager.fetchTopHeadlines()
-            }
+                apiManager.fetchTopHeadlines(for: selectedCountry)
+                apiManager.fetchNewsByCategory(for: selectedCategory)
 
+            }
+            .onChange(of: selectedCountry) { newCountry in
+                          apiManager.fetchTopHeadlines(for: newCountry)  // Update headlines when country changes
+                      }
+            .onChange(of: selectedCategory) { newCategory in
+                apiManager.fetchNewsByCategory(for: newCategory)  // Update headlines when country changes
+                      }
+            
+            
         }
         
         
