@@ -9,12 +9,8 @@ import SwiftUI
 
 struct ContentView: View {
     
-    let sampleArticles = [
-        NewsArticle(title: "7 new Washington Post articles that will change your life", image: "newspaper"),
-        NewsArticle(title: "Apple's latest event highlights new tech trends", image: "applelogo"),
-        NewsArticle(title: "Apple's latest products", image: "applelogo")
-        
-    ]
+    @StateObject private var apiManager = NewsAPIManager()
+    @State private var selectedURL: IdentifiableURL?  // To hold the tapped article URL
     
     
     var body: some View {
@@ -26,66 +22,77 @@ struct ContentView: View {
                 
                 
                 VStack {
-                     //List of News Cell
+                    //List of News Cell
                     List {
                         Section(header: SectionHeader(title: "Today's top stories")) {
-                            ForEach(sampleArticles) { article in
-                                NewsCell(newsImage: article.image, newsTitle: article.title)
-                                    .frame(height: 40)
+                            ForEach(apiManager.articles) { article in
+                                Button(action: { selectedURL = IdentifiableURL(url: article.url)}) {
+                                    NewsCell(newsImage: article.urlToImage, newsTitle: article.title)
+                                        .frame(height: 40)
+                                }
                             }
                         }
                         
-                        Section(header: SectionHeader(title: "Today's tech stories")){
-                            ForEach(sampleArticles) { article in
-                                NewsCell(newsImage: article.image, newsTitle: article.title)
-                                    .frame(height: 40)
-                            }
-
+//                        Section(header: SectionHeader(title: "Today's tech stories")){
+//                            ForEach(apiManager.articles) { article in
+//                                Button(action: { selectedURL = IdentifiableURL(url: article.url)}) {
+//                                    NewsCell(newsImage: article.urlToImage, newsTitle: article.title)
+//                                        .frame(height: 40)
+//                                }
+//                            }
+//                            
+//                        }
+                        
+                        
+                    }
+                }
+                //MARK: ToolBar
+                .toolbar {
+                    ToolbarItem(placement: .navigation){
+                        //Todays Date formatted to day and month
+                        VStack(alignment: .leading){
+                            
+                            //Date
+                            Text(Date().currentMonthAndDay())
+                                .font(.title)
+                                .fontWeight(.bold)
+                                .foregroundStyle(.secondary)
+                        }
+                        
+                    }
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button(action: {
+                            
+                        }){
+                            Image(systemName: "globe")
+                                .foregroundStyle(.pink)
                         }
                     }
-                    
-                    
+                    ToolbarItem{
+                        Button(action: {
+                            
+                        }){
+                            Image(systemName: "magnifyingglass")
+                                .foregroundStyle(.pink)
+                            
+                        }
+                    }
+                }
+                //Safari view with the selectedURL
+                .sheet(item: $selectedURL) { identifiableURL in
+                    SafariView(url: identifiableURL.url)
                 }
             }
-            //MARK: ToolBar
-            .toolbar {
-                ToolbarItem(placement: .navigation){
-                    //Todays Date formatted to day and month
-                    VStack(alignment: .leading){
-                    
-                        //Date
-                        Text(Date().currentMonthAndDay())
-                            .font(.title)
-                            .fontWeight(.bold)
-                            .foregroundStyle(.secondary)
-                    }
-                    
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {
-                        
-                    }){
-                        Image(systemName: "globe")
-                            .foregroundStyle(.pink)
-                    }
-                }
-                ToolbarItem{
-                    Button(action: {
-                        
-                    }){
-                        Image(systemName: "magnifyingglass")
-                            .foregroundStyle(.pink)
+            .onAppear{
+                apiManager.fetchTopHeadlines()
+            }
 
-                    }
-                }
-            }
         }
+        
+        
     }
     
-
 }
-
-
 
 //MARK: - Section Header
 

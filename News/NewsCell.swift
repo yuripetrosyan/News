@@ -9,17 +9,25 @@ import SwiftUI
 
 
 struct NewsCell: View {
-    var newsImage: String
+    var newsImage: URL?
     var newsTitle: String
-    var imageSize: CGFloat = 20
     
     var body : some View {
         HStack(spacing: 20) {
-            Image(systemName: newsImage)
-                .resizable()
-                .scaledToFit()
-                .frame(width: imageSize, height: imageSize)
-            
+            if let newsImage = newsImage {
+                AsyncImage(url: newsImage) { image in
+                    image.resizable()
+                } placeholder: {
+                    Image(systemName: "newspaper")
+                }
+                .frame(width: 50, height: 50)
+                .cornerRadius(8)
+            } else {
+                Image(systemName: "newspaper")
+                    .frame(width: 50, height: 50)
+                    .cornerRadius(8)
+
+            }
             Text(newsTitle)
                 .font(.headline)
                 .multilineTextAlignment(.leading)
@@ -33,6 +41,6 @@ struct NewsCell: View {
 }
 
 
-#Preview {
-    NewsCell(newsImage: "newspaper", newsTitle: "7 new interesting facts about the universe")
-}
+//#Preview {
+//    NewsCell(newsImage: "newspaper", newsTitle: "7 new interesting facts about the universe")
+//}
