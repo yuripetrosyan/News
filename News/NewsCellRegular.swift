@@ -10,21 +10,21 @@ import SwiftUI
 struct NewsCellRegular: View {
     var body: some View {
         
-        NewsCell(NewsImage: "newspaper", NewsTitle: "7 key takeaways from the latest Apple event and it brought some thing s")
+        NewsCell(newsImage: "newspaper", newsTitle: "7 key takeaways from the latest Apple event and it brought some thing s")
     }
 }
 
 struct NewsCell: View {
-    var NewsImage: String
-    var NewsTitle: String
+    var newsImage: String
+    var newsTitle: String
     
     var body : some View {
         HStack(spacing: 20) {
-            Image(systemName: NewsImage)
+            Image(systemName: newsImage)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 20, height: 20)
-            Text(NewsTitle)
+            Text(newsTitle)
                 .font(.headline)
                 .multilineTextAlignment(.leading)
                 .lineLimit(2)

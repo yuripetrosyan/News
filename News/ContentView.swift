@@ -20,25 +20,17 @@ struct ContentView: View {
                      //List of News Cell
                     List {
                         
-                        Section(header: Text("Today's top stories")
-                            .foregroundStyle(.pink)
-                            .fontWeight(.semibold)
-                            .padding(.leading, -25)
-                        ){
+                        Section(header: SectionHeader(title: "Today's top stories")){
                             ForEach(0..<4, id: \.self) { index in
-                                NewsCell(NewsImage: "newspaper", NewsTitle: "7 new washington post articles that will change your life")
+                                NewsCell(newsImage: "newspaper", newsTitle: "7 new washington post articles that will change your life")
                                     .frame(height: 40)
                             }
 
                         }
                         
-                        Section(header: Text("Today's tech stories")
-                            .foregroundStyle(.pink)
-                            .fontWeight(.semibold)
-                            .padding(.leading, -25)
-                        ){
+                        Section(header: SectionHeader(title: "Today's tech stories")){
                             ForEach(0..<3, id: \.self) { index in
-                                NewsCell(NewsImage: "newspaper", NewsTitle: "7 new washington post articles that will change your life")
+                                NewsCell(newsImage: "newspaper", newsTitle: "7 new washington post articles that will change your life")
                                     .frame(height: 40)
                             }
 
@@ -90,6 +82,17 @@ struct ContentView: View {
       }
 }
 
+
+struct SectionHeader: View {
+    let title: String
+    
+    var body: some View {
+        Text(title)
+            .foregroundStyle(.pink)
+            .fontWeight(.semibold)
+            .padding(.leading, -10)
+    }
+}
 #Preview {
     ContentView()
 }

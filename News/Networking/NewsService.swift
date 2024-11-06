@@ -8,8 +8,8 @@
 
 import Foundation
 
-final class ApiCall {
-    static let shared = ApiCall()
+final class NewsService {
+    static let shared = NewsService()
     
     struct Constants {
         static let topHeadlinesURL = URL(string: "https://newsapi.org/v2/top-headlines?country=us&apiKey=d7f2a31563784ac2a4cb65735c3c6d77")
