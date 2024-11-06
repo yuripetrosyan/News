@@ -7,23 +7,19 @@
 
 import SwiftUI
 
-struct NewsCellRegular: View {
-    var body: some View {
-        
-        NewsCell(newsImage: "newspaper", newsTitle: "7 key takeaways from the latest Apple event and it brought some thing s")
-    }
-}
 
 struct NewsCell: View {
     var newsImage: String
     var newsTitle: String
+    var imageSize: CGFloat = 20
     
     var body : some View {
         HStack(spacing: 20) {
             Image(systemName: newsImage)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 20, height: 20)
+                .frame(width: imageSize, height: imageSize)
+            
             Text(newsTitle)
                 .font(.headline)
                 .multilineTextAlignment(.leading)
@@ -38,5 +34,5 @@ struct NewsCell: View {
 
 
 #Preview {
-    NewsCellRegular()
+    NewsCell(newsImage: "newspaper", newsTitle: "7 new interesting facts about the universe")
 }

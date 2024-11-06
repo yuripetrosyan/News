@@ -8,6 +8,15 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    let sampleArticles = [
+        NewsArticle(title: "7 new Washington Post articles that will change your life", image: "newspaper"),
+        NewsArticle(title: "Apple's latest event highlights new tech trends", image: "applelogo"),
+        NewsArticle(title: "Apple's latest products", image: "applelogo")
+        
+    ]
+    
+    
     var body: some View {
         NavigationStack{
             ZStack{
@@ -19,18 +28,16 @@ struct ContentView: View {
                 VStack {
                      //List of News Cell
                     List {
-                        
-                        Section(header: SectionHeader(title: "Today's top stories")){
-                            ForEach(0..<4, id: \.self) { index in
-                                NewsCell(newsImage: "newspaper", newsTitle: "7 new washington post articles that will change your life")
+                        Section(header: SectionHeader(title: "Today's top stories")) {
+                            ForEach(sampleArticles) { article in
+                                NewsCell(newsImage: article.image, newsTitle: article.title)
                                     .frame(height: 40)
                             }
-
                         }
                         
                         Section(header: SectionHeader(title: "Today's tech stories")){
-                            ForEach(0..<3, id: \.self) { index in
-                                NewsCell(newsImage: "newspaper", newsTitle: "7 new washington post articles that will change your life")
+                            ForEach(sampleArticles) { article in
+                                NewsCell(newsImage: article.image, newsTitle: article.title)
                                     .frame(height: 40)
                             }
 
@@ -40,13 +47,14 @@ struct ContentView: View {
                     
                 }
             }
+            //MARK: ToolBar
             .toolbar {
                 ToolbarItem(placement: .navigation){
                     //Todays Date formatted to day and month
                     VStack(alignment: .leading){
                     
-                        
-                        Text(currentMonthAndDay())
+                        //Date
+                        Text(Date().currentMonthAndDay())
                             .font(.title)
                             .fontWeight(.bold)
                             .foregroundStyle(.secondary)
@@ -61,7 +69,7 @@ struct ContentView: View {
                             .foregroundStyle(.pink)
                     }
                 }
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem{
                     Button(action: {
                         
                     }){
@@ -74,14 +82,12 @@ struct ContentView: View {
         }
     }
     
-    func currentMonthAndDay() -> String {
-          let date = Date()
-          let formatter = DateFormatter()
-          formatter.dateFormat = "MMMM d" // "MMMM" for full month name and "d" for the day
-          return formatter.string(from: date)
-      }
+
 }
 
+
+
+//MARK: - Section Header
 
 struct SectionHeader: View {
     let title: String
@@ -93,6 +99,9 @@ struct SectionHeader: View {
             .padding(.leading, -10)
     }
 }
+
+
+
 #Preview {
     ContentView()
 }
